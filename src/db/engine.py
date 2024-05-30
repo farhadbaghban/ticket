@@ -1,39 +1,18 @@
-from sqlalchemy import create_engine
-from sqlalchemy.exc import OperationalError
-from sqlalchemy.orm import declarative_base, sessionmaker
-import time
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# SQLALCHEMY_DATABASE_URL = "sqlite:///./blog.db"
-SQLALCHEMY_DATABASE_URL = "mysql+pymysql://user:password@mysql:3306/blog_db"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://user:password@localhost:5434/ticket"
+engine = create_async_engine(SQLALCHEMY_DATABASE_URL, echo=True)
 
-# Retry connecting to the database
-max_retries = 5
-retry_delay = 5  # seconds
-
-for _ in range(max_retries):
-    try:
-        engine.connect()
-        break
-    except OperationalError as e:
-        print(f"Error connecting to the database: {e}")
-        print("Retrying in {} seconds...".format(retry_delay))
-        time.sleep(retry_delay)
-else:
-    print(
-        "Failed to connect to the database after {} retries. Exiting...".format(
-            max_retries
-        )
-    )
-    exit(1)
-
-SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
+SessionLocal = sessionmaker(
+    bind=engine, autoflush=False, autocommit=False, class_=AsyncSession
+)
 Base = declarative_base()
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db():
+    async with SessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
