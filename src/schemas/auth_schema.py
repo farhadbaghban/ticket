@@ -1,9 +1,9 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr,Field
 from datetime import timedelta
 
 
 class TokenData(BaseModel):
-    email: str | None = None
+    email: EmailStr | None = Field(default=None)
     exp: timedelta | None = None
 
 

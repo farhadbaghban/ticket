@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr,Field
 
 
 class UserAuth(BaseModel):
     id: int
-    email: str
+    email: EmailStr | None = Field(default=None)
 
 
 class UserCreateLogin(BaseModel):
     password: str
-    email: str
+    email: EmailStr | None = Field(default=None)
