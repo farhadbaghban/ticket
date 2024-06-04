@@ -1,10 +1,11 @@
-from pydantic import BaseModel,EmailStr,Field
+from pydantic import BaseModel, EmailStr, Field
 from datetime import timedelta
+from typing import Optional
 
 
 class TokenData(BaseModel):
-    email: EmailStr | None = Field(default=None)
-    exp: timedelta | None = None
+    email: Optional[EmailStr] = None
+    exp: Optional[timedelta] = None
 
 
 class TokenResponseSchema(BaseModel):

@@ -1,11 +1,12 @@
-from pydantic import BaseModel,EmailStr,Field
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 
 class UserAuth(BaseModel):
     id: int
-    email: EmailStr | None = Field(default=None)
+    email: Optional[EmailStr] = None
 
 
 class UserCreateLogin(BaseModel):
     password: str
-    email: EmailStr | None = Field(default=None)
+    email: Optional[EmailStr] = None
